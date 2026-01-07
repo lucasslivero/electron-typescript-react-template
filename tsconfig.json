@@ -1,15 +1,14 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "esnext",
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true
-  }
+	"files": [],
+	"references": [
+		{ "path": "./tsconfig.main.json" },
+		{ "path": "./tsconfig.renderer.json" }
+	],
+	"compilerOptions": {
+		"baseUrl": ".",
+		"target": "esnext",
+		"paths": {
+			"@shared/*": ["src/shared/*"]
+		}
+	}
 }

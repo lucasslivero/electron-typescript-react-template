@@ -4,12 +4,13 @@
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
+  "type": "module",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx .",
+    "lint": "@biomejs/biome check --write --ext .ts,.tsx .",
     "prepare": "husky"
   },
   "keywords": [],
@@ -35,7 +36,7 @@
     "electron": "39.2.7",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "typescript": "^5.9.3",
+    "typescript": "^5.4.21",
     "vite": "^7.3.0"
   },
   "dependencies": {
