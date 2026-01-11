@@ -1,4 +1,4 @@
-# Project Name
+# electron-typescript-react-template
 
 A modern desktop application built with Electron, React, and TypeScript, leveraging the power of Vite for fast development and Electron Forge for seamless packaging and distribution.
 
@@ -50,6 +50,7 @@ npm start
 ```
 
 This will:
+
 - Launch the Electron application
 - Enable hot module replacement for React components
 - Watch for file changes in both main and renderer processes
@@ -74,6 +75,7 @@ npm run make
 ```
 
 This will generate platform-specific distributables in the `out/make` directory:
+
 - **Windows**: `.exe` installer
 - **macOS**: `.dmg` disk image
 - **Linux**: `.deb`, `.rpm`, or AppImage (depending on configuration)
@@ -114,6 +116,7 @@ project-root/
 ### Main Process (`src/main/index.ts`)
 
 The main process controls the application lifecycle, creates windows, and handles system-level operations. This is where you:
+
 - Create BrowserWindow instances
 - Handle IPC communication from renderer processes
 - Access Node.js and Electron APIs
@@ -122,6 +125,7 @@ The main process controls the application lifecycle, creates windows, and handle
 ### Preload Script (`src/main/preload.ts`)
 
 The preload script runs before the renderer process loads and provides a secure bridge between the main and renderer processes. Use this to:
+
 - Expose specific APIs to the renderer process
 - Implement IPC handlers safely
 - Access both Node.js and DOM APIs
@@ -129,6 +133,7 @@ The preload script runs before the renderer process loads and provides a secure 
 ### Renderer Process (`src/renderer/`)
 
 The renderer process contains your React application. This is where you:
+
 - Build your UI with React components
 - Handle user interactions
 - Communicate with the main process via IPC
@@ -136,14 +141,14 @@ The renderer process contains your React application. This is where you:
 
 ## Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start development server with hot reload |
-| `npm run package` | Package the app for production (current platform) |
-| `npm run make` | Create distributable installers |
-| `npm run publish` | Publish to configured distribution platforms |
-| `npm run lint` | Run linter to check code quality |
-| `npm run typecheck` | Check TypeScript types without building |
+| Command             | Description                                       |
+| ------------------- | ------------------------------------------------- |
+| `npm start`         | Start development server with hot reload          |
+| `npm run package`   | Package the app for production (current platform) |
+| `npm run make`      | Create distributable installers                   |
+| `npm run publish`   | Publish to configured distribution platforms      |
+| `npm run lint`      | Run linter to check code quality                  |
+| `npm run typecheck` | Check TypeScript types without building           |
 
 ## Configuration
 
@@ -152,7 +157,7 @@ The renderer process contains your React application. This is where you:
 Configure packaging and distribution in `forge.config.ts`:
 
 ```typescript
-import type { ForgeConfig } from '@electron-forge/shared-types';
+import type { ForgeConfig } from "@electron-forge/shared-types";
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -172,6 +177,7 @@ export default config;
 ### Vite
 
 Separate Vite configurations for different processes:
+
 - `vite.main.config.ts` - Main process bundling
 - `vite.renderer.config.ts` - React app bundling
 - `vite.preload.config.ts` - Preload script bundling
@@ -185,40 +191,45 @@ TypeScript configuration is in `tsconfig.json`. Adjust compiler options as neede
 ### Sending from Renderer to Main
 
 In `preload.ts`:
-```typescript
-import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('api', {
-  sendMessage: (message: string) => ipcRenderer.send('message', message),
+```typescript
+import { contextBridge, ipcRenderer } from "electron";
+
+contextBridge.exposeInMainWorld("api", {
+  sendMessage: (message: string) => ipcRenderer.send("message", message),
 });
 ```
 
 In `main/index.ts`:
-```typescript
-import { ipcMain } from 'electron';
 
-ipcMain.on('message', (event, message) => {
-  console.log('Received message:', message);
+```typescript
+import { ipcMain } from "electron";
+
+ipcMain.on("message", (event, message) => {
+  console.log("Received message:", message);
 });
 ```
 
 In React component:
+
 ```typescript
-window.api.sendMessage('Hello from renderer!');
+window.api.sendMessage("Hello from renderer!");
 ```
 
 ### Sending from Main to Renderer
 
 In `main/index.ts`:
+
 ```typescript
-mainWindow.webContents.send('update', data);
+mainWindow.webContents.send("update", data);
 ```
 
 In `preload.ts`:
+
 ```typescript
-contextBridge.exposeInMainWorld('api', {
+contextBridge.exposeInMainWorld("api", {
   onUpdate: (callback: (data: any) => void) => {
-    ipcRenderer.on('update', (event, data) => callback(data));
+    ipcRenderer.on("update", (event, data) => callback(data));
   },
 });
 ```
@@ -257,6 +268,7 @@ VITE_APP_NAME=My Electron App
 ```
 
 Access in React components:
+
 ```typescript
 const apiUrl = import.meta.env.VITE_API_URL;
 ```
@@ -266,6 +278,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 ### Renderer Process
 
 The Chrome DevTools open automatically in development mode. You can also:
+
 - Press `F12` to toggle DevTools
 - Use React Developer Tools extension
 - Use `console.log()` for debugging
@@ -275,6 +288,7 @@ The Chrome DevTools open automatically in development mode. You can also:
 Debug the main process using VS Code:
 
 1. Create `.vscode/launch.json`:
+
 ```json
 {
   "version": "0.2.0",
@@ -359,6 +373,7 @@ This project is licensed under the [MIT License](LICENSE).
 ## Support
 
 For issues and questions:
+
 - Open an issue on GitHub
 - Check existing issues for solutions
 - Refer to the official documentation
