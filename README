@@ -1,0 +1,368 @@
+# Project Name
+
+A modern desktop application built with Electron, React, and TypeScript, leveraging the power of Vite for fast development and Electron Forge for seamless packaging and distribution.
+
+## Tech Stack
+
+- **[Electron](https://www.electronjs.org/)** - Cross-platform desktop application framework
+- **[React](https://react.dev/)** - UI library for building interactive interfaces
+- **[TypeScript](https://www.typescriptlang.org/)** - Typed superset of JavaScript
+- **[Vite](https://vitejs.dev/)** - Next-generation frontend build tool
+- **[Electron Forge](https://www.electronforge.io/)** - Complete toolchain for building and distributing Electron apps
+
+## Features
+
+- ⚡️ Fast development with Vite's Hot Module Replacement (HMR)
+- 🎨 Modern React 18 with hooks and functional components
+- 🔒 Type-safe development with TypeScript
+- 📦 Easy packaging and distribution with Electron Forge
+- 🔧 Pre-configured development environment
+- 🚀 Production-ready build system
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **npm** (v9 or higher) or **yarn**
+
+## Getting Started
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+# Clone the repository
+git clone <your-repository-url>
+cd <project-directory>
+
+# Install dependencies
+npm install
+```
+
+### Development
+
+Start the development server with hot reload:
+
+```bash
+npm start
+```
+
+This will:
+- Launch the Electron application
+- Enable hot module replacement for React components
+- Watch for file changes in both main and renderer processes
+- Open DevTools automatically for debugging
+
+### Building
+
+Create a production build:
+
+```bash
+npm run package
+```
+
+This compiles your application and packages it for your current platform.
+
+### Distribution
+
+Create distributable installers:
+
+```bash
+npm run make
+```
+
+This will generate platform-specific distributables in the `out/make` directory:
+- **Windows**: `.exe` installer
+- **macOS**: `.dmg` disk image
+- **Linux**: `.deb`, `.rpm`, or AppImage (depending on configuration)
+
+### Publishing
+
+Publish your application to distribution platforms:
+
+```bash
+npm run publish
+```
+
+> **Note**: Configure your publishing targets in `forge.config.ts` before running this command.
+
+## Project Structure
+
+```
+project-root/
+├── src/
+│   ├── main/               # Electron main process
+│   │   ├── index.ts        # Main process entry point
+│   │   └── preload.ts      # Preload script for IPC
+│   ├── renderer/           # React application
+│   │   ├── App.tsx         # Root React component
+│   │   ├── index.tsx       # Renderer entry point
+│   │   └── index.css       # Global styles
+│   └── types/              # TypeScript type definitions
+├── forge.config.ts         # Electron Forge configuration
+├── vite.main.config.ts     # Vite config for main process
+├── vite.renderer.config.ts # Vite config for renderer process
+├── vite.preload.config.ts  # Vite config for preload script
+├── tsconfig.json           # TypeScript configuration
+└── package.json            # Project dependencies and scripts
+```
+
+## Key Files
+
+### Main Process (`src/main/index.ts`)
+
+The main process controls the application lifecycle, creates windows, and handles system-level operations. This is where you:
+- Create BrowserWindow instances
+- Handle IPC communication from renderer processes
+- Access Node.js and Electron APIs
+- Manage native menus, dialogs, and notifications
+
+### Preload Script (`src/main/preload.ts`)
+
+The preload script runs before the renderer process loads and provides a secure bridge between the main and renderer processes. Use this to:
+- Expose specific APIs to the renderer process
+- Implement IPC handlers safely
+- Access both Node.js and DOM APIs
+
+### Renderer Process (`src/renderer/`)
+
+The renderer process contains your React application. This is where you:
+- Build your UI with React components
+- Handle user interactions
+- Communicate with the main process via IPC
+- Use web technologies (HTML, CSS, JavaScript)
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start development server with hot reload |
+| `npm run package` | Package the app for production (current platform) |
+| `npm run make` | Create distributable installers |
+| `npm run publish` | Publish to configured distribution platforms |
+| `npm run lint` | Run linter to check code quality |
+| `npm run typecheck` | Check TypeScript types without building |
+
+## Configuration
+
+### Electron Forge
+
+Configure packaging and distribution in `forge.config.ts`:
+
+```typescript
+import type { ForgeConfig } from '@electron-forge/shared-types';
+
+const config: ForgeConfig = {
+  packagerConfig: {
+    // App icon, ignore patterns, etc.
+  },
+  makers: [
+    // Configure platform-specific makers
+  ],
+  plugins: [
+    // Vite plugin configuration
+  ],
+};
+
+export default config;
+```
+
+### Vite
+
+Separate Vite configurations for different processes:
+- `vite.main.config.ts` - Main process bundling
+- `vite.renderer.config.ts` - React app bundling
+- `vite.preload.config.ts` - Preload script bundling
+
+### TypeScript
+
+TypeScript configuration is in `tsconfig.json`. Adjust compiler options as needed for your project requirements.
+
+## Inter-Process Communication (IPC)
+
+### Sending from Renderer to Main
+
+In `preload.ts`:
+```typescript
+import { contextBridge, ipcRenderer } from 'electron';
+
+contextBridge.exposeInMainWorld('api', {
+  sendMessage: (message: string) => ipcRenderer.send('message', message),
+});
+```
+
+In `main/index.ts`:
+```typescript
+import { ipcMain } from 'electron';
+
+ipcMain.on('message', (event, message) => {
+  console.log('Received message:', message);
+});
+```
+
+In React component:
+```typescript
+window.api.sendMessage('Hello from renderer!');
+```
+
+### Sending from Main to Renderer
+
+In `main/index.ts`:
+```typescript
+mainWindow.webContents.send('update', data);
+```
+
+In `preload.ts`:
+```typescript
+contextBridge.exposeInMainWorld('api', {
+  onUpdate: (callback: (data: any) => void) => {
+    ipcRenderer.on('update', (event, data) => callback(data));
+  },
+});
+```
+
+## Adding Dependencies
+
+### Production Dependencies
+
+```bash
+npm install <package-name>
+```
+
+### Development Dependencies
+
+```bash
+npm install --save-dev <package-name>
+```
+
+### Native Node Modules
+
+If you need to use native Node.js modules, ensure they're properly rebuilt for Electron:
+
+```bash
+npm install --save <native-module>
+```
+
+Electron Forge automatically handles native module rebuilding during the build process.
+
+## Environment Variables
+
+Create a `.env` file in the project root for environment-specific configuration:
+
+```env
+VITE_API_URL=https://api.example.com
+VITE_APP_NAME=My Electron App
+```
+
+Access in React components:
+```typescript
+const apiUrl = import.meta.env.VITE_API_URL;
+```
+
+## Debugging
+
+### Renderer Process
+
+The Chrome DevTools open automatically in development mode. You can also:
+- Press `F12` to toggle DevTools
+- Use React Developer Tools extension
+- Use `console.log()` for debugging
+
+### Main Process
+
+Debug the main process using VS Code:
+
+1. Create `.vscode/launch.json`:
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Main Process",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge.cmd"
+      },
+      "args": ["start"],
+      "outputCapture": "std"
+    }
+  ]
+}
+```
+
+2. Set breakpoints in your main process code
+3. Press `F5` to start debugging
+
+## Performance Optimization
+
+- **Code Splitting**: Use React lazy loading for large components
+- **Tree Shaking**: Vite automatically removes unused code
+- **Asset Optimization**: Optimize images and other assets before bundling
+- **Window Management**: Properly dispose of windows and clean up listeners
+- **Memory Leaks**: Remove event listeners when components unmount
+
+## Security Best Practices
+
+1. **Enable Context Isolation**: Already enabled in the template
+2. **Disable Node Integration**: Keep `nodeIntegration: false` in renderer
+3. **Use Preload Scripts**: Expose only necessary APIs to renderer
+4. **Validate IPC Input**: Always validate data from renderer process
+5. **Content Security Policy**: Add CSP headers for additional protection
+6. **Keep Dependencies Updated**: Regularly update Electron and dependencies
+
+## Troubleshooting
+
+### Build Failures
+
+- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
+- Clear Vite cache: `rm -rf .vite`
+- Check Node.js version compatibility
+
+### Hot Reload Not Working
+
+- Ensure no TypeScript errors in your code
+- Check that Vite dev server is running
+- Restart the development server
+
+### Native Module Issues
+
+- Rebuild native modules: `npm rebuild`
+- Ensure you're using compatible versions with your Electron version
+
+## Resources
+
+- [Electron Documentation](https://www.electronjs.org/docs/latest)
+- [React Documentation](https://react.dev/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Vite Guide](https://vitejs.dev/guide/)
+- [Electron Forge Documentation](https://www.electronforge.io/)
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Support
+
+For issues and questions:
+- Open an issue on GitHub
+- Check existing issues for solutions
+- Refer to the official documentation
+
+---
+
+**Happy coding!** 🚀
