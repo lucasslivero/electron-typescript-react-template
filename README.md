@@ -92,17 +92,20 @@ npm run publish
 
 ## Project Structure
 
-```
+```txt
 project-root/
 ├── src/
 │   ├── main/               # Electron main process
-│   │   ├── index.ts        # Main process entry point
+│   │   └── main.ts         # Main process entry point
+│   ├── preload/            # Preload scripts
 │   │   └── preload.ts      # Preload script for IPC
 │   ├── renderer/           # React application
-│   │   ├── App.tsx         # Root React component
-│   │   ├── index.tsx       # Renderer entry point
-│   │   └── index.css       # Global styles
-│   └── types/              # TypeScript type definitions
+│   │   │── renderer.tsx    # Root React component
+│   │   ├── src/            # React source files
+│   │   │   ├── App.tsx     # Renderer entry point
+│   │   │   └── index.css   # Global styles
+│   └── shared/             # Shared TypeScript types & utilities
+│── index.html              # HTML template
 ├── forge.config.ts         # Electron Forge configuration
 ├── vite.main.config.ts     # Vite config for main process
 ├── vite.renderer.config.ts # Vite config for renderer process
