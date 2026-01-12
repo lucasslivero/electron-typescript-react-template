@@ -1,6 +1,13 @@
+import { useEffect } from "react";
 import "./index.css";
 
 function App() {
+  useEffect(() => {
+    async function main() {
+      console.log(await window.api.sayHello());
+    }
+    main();
+  });
   return (
     <div>
       <h1>Hello World !</h1>

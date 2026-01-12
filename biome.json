@@ -26,6 +26,9 @@
         "noGlobalObjectCalls": "error",
         "noUnusedImports": { "level": "error", "fix": "safe" },
         "noGlobalDirnameFilename": "error"
+      },
+      "performance": {
+        "noDynamicNamespaceImportAccess": "off"
       }
     }
   },
