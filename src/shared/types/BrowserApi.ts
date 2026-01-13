@@ -1,6 +1,9 @@
-export const BrowserApis = ["sayHello"];
-export interface IBrowserApi {
-  locale: string;
+import type * as ipcHandlers from "./../../main/api/api";
 
-  sayHello: () => Promise<null>;
-}
+type Api = typeof ipcHandlers;
+
+type customApi = {
+  locale: string;
+};
+
+export type IBrowserApi = Api & customApi;

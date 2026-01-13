@@ -1,6 +1,8 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-import { BrowserApis } from "@shared/types/BrowserApi";
+/** biome-ignore-all lint/suspicious/noExplicitAny: <Generic functions> */
 import { ipcRenderer } from "electron";
+import * as ipcHandlers from "./../main/api/api";
+
+const BrowserApis = Object.keys(ipcHandlers);
 
 type ApiFromHandlers<T extends Record<string, (...args: any[]) => any>> = {
   [K in keyof T]: (

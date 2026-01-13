@@ -1,5 +1,7 @@
-function sayHello() {
+export async function sayHello() {
   return "Hello World";
 }
 
-export { sayHello };
+export async function getName(name: string) {
+  return name;
+}
