@@ -1,15 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [message, setMessage] = useState<string>("");
   useEffect(() => {
     async function main() {
-      console.log(await window.api.sayHello());
+      setMessage(await window.api.sayHello());
     }
     main();
   });
   return (
     <div>
-      <h1>Hello World !</h1>
+      <h1>{message}</h1>
       <p style={{ marginTop: "20px", color: "#666" }}>Running on Electron</p>
     </div>
   );

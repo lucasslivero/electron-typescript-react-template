@@ -1,4 +1,7 @@
+import { watch } from "node:fs";
+import { join } from "node:path";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
+import { requestAppRestart } from "@electron-forge/core-utils/restart";
 import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerRpm } from "@electron-forge/maker-rpm";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
@@ -6,6 +9,9 @@ import { MakerZIP } from "@electron-forge/maker-zip";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { VitePlugin } from "@electron-forge/plugin-vite";
 import type { ForgeConfig } from "@electron-forge/shared-types";
+
+let mainWatcher: ReturnType<typeof watch> | null = null;
+let restartDebounce: NodeJS.Timeout | null = null;
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -16,6 +22,7 @@ const config: ForgeConfig = {
   makers: [new MakerSquirrel({}), new MakerZIP({}, ["darwin"]), new MakerRpm({}), new MakerDeb({})],
   plugins: [
     new VitePlugin({
+      hotRestart: true,
       // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
       // If you are familiar with Vite configuration, it will look really familiar.
       build: [
@@ -50,6 +57,20 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  hooks: {
+    postStart: async () => {
+      if (mainWatcher) return;
+      const buildDir = join(process.cwd(), ".vite/build");
+      mainWatcher = watch(buildDir, (_event, filename) => {
+        if (filename === "main.js") {
+          if (restartDebounce) clearTimeout(restartDebounce);
+          restartDebounce = setTimeout(() => {
+            requestAppRestart();
+          }, 300);
+        }
+      });
+    },
+  },
 };
 
 export default config;
