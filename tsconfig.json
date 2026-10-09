@@ -1,14 +1,10 @@
 {
-	"files": [],
-	"references": [
-		{ "path": "./tsconfig.main.json" },
-		{ "path": "./tsconfig.renderer.json" }
-	],
-	"compilerOptions": {
-		"baseUrl": ".",
-		"target": "esnext",
-		"paths": {
-			"@shared/*": ["src/shared/*"]
-		}
-	}
+  "files": [],
+  "references": [{ "path": "./tsconfig.main.json" }, { "path": "./tsconfig.renderer.json" }],
+  "compilerOptions": {
+    "target": "esnext",
+    "paths": {
+      "@shared/*": ["./src/shared/*"]
+    }
+  }
 }

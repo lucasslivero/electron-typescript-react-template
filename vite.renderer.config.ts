@@ -1,6 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import { aliases } from "./vite.config";
+import { aliases } from "./vite.config.ts";
 
 export default defineConfig({
   plugins: [react()],
