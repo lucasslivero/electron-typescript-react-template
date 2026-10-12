@@ -29,6 +29,12 @@
       },
       "performance": {
         "noDynamicNamespaceImportAccess": "off"
+      },
+      "nursery": {
+        "useSortedClasses": {
+          "level": "info",
+          "fix": "safe"
+        }
       }
     }
   },
@@ -41,6 +47,11 @@
       "arrowParentheses": "always",
       "bracketSpacing": true,
       "bracketSameLine": false
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   }
 }
