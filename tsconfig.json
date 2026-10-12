@@ -4,7 +4,9 @@
   "compilerOptions": {
     "target": "esnext",
     "paths": {
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@app/*": ["./src/renderer/app/*"],
+      "@ui/*": ["./src/renderer/app/components/ui/*"]
     }
   }
 }
