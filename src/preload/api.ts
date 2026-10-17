@@ -1,9 +1,8 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <Generic functions> */
 import { ipcRenderer } from "electron";
-import type { ApiKeys } from "../shared/types/BrowserApi";
+import { apiKeys } from "../shared/types/BrowserApi";
 
-const apiKeys: ApiKeys[] = ["sayHello", "getName"];
-const BrowserApis: ApiKeys[] = Array.from(new Set(apiKeys));
+const BrowserApis = Array.from(new Set(apiKeys));
 
 type ApiFromHandlers<T extends Record<string, (...args: any[]) => any>> = {
   [K in keyof T]: (

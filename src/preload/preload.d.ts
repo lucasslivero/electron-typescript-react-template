@@ -3,3 +3,5 @@
 interface Window {
   api: import("@shared/types/BrowserApi").IBrowserApi;
 }
+
+declare module "*.css";
